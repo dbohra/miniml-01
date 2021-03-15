@@ -3,6 +3,29 @@
 
 Please put your name here:  
 **Name:** .......
+## Foreword
+### Implementation of a Minimal Ray Tracing System
+
+Each basic machine learning system in principle comprises 3 stages:
+- **Training** where the entire ML models' parametra are estimated with help of training data (data + groundtruth).
+- **Testing** where test data is classified, and
+- **Evaluation** where the testing results are evaluated by comparison with the groundtruth.
+
+In this exercise, you will build a __minimal__ classification system by implementing these three tasks. To make this easier, you are provided with a basic machine learining framework so that you just have to __fill in__ the missing core parts.
+- Download and install [CMake](https://cmake.org)
+- Download (, build) and install [OpenCV](https://opencv.org) library
+- Fork the current repository
+- Using CMake generate the solution for miniml for your favorite IDE (_e.g._ Microsoft Visual Studio or XCode)
+- Check that you can build and run _miniml_
+- Do the assignment
+- Add new folder "renders" to repository and save there the resulting renders (_i.e._ resulting class maps)
+- Submit assignment by making a pull request
+
+The provided machine learning framework contains a number of useful C++ classes, which you will need for the practical exercises:
+- OpenCV class Vec3b, which incorporates standard vector operations such as addition, subtraction, dot product, cross product, _etc._
+- In order to handle and save image data, an OpenCV class Mat is included that handles pixels of type Vec3b. Pixels are stored in BGR (Blue, Green, Red) format, where each color component ranges from 0 to 255. For example, black=(0, 0, 0), white=(255, 255, 255), red=(0, 0, 255). With function imwrite(String& fileName, Mat& img) image data is saved into file. The bmp, jpg, _etc._ file formats are supported. See main.cpp on how to use this class.
+- A class CPDFHistogram  is provided for handling all PDF relatied procedures: sequential build, probability estimation, _etc_. Internally PDFs are stored as one-dimensional histograms.
+- Furthermore a class CBayes implements the naive Bayes Model for classification (that we have studied on the lectures). It has a method ```addFeatureVec``` for sequential estimation of the Bayes model parameters and method  ```getNodePotentials``` for classifying the test data.
 
 ## Problem 1
 ### Supersampling (Points 10 + 10 + 10)
