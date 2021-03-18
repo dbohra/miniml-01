@@ -28,7 +28,18 @@ The provided machine learning framework contains a number of useful C++ classes,
 - Furthermore a class CBayes implements the naive Bayes Model for classification (that we have studied on the lectures). It has a method ```addFeatureVec``` for sequential estimation of the Bayes model parameters and method  ```getNodePotentials``` for classifying the test data.
 
 ## Problem 1
-### Supersampling (Points 10 + 10 + 10)
+### Feature Extraction (Points 10)
+We will start with extracting features from the images into the feature vector. For sake of simplicity the features were already calculated and are stored in the 001_fv.jpg and 002_fv.jpg files as red, green and blue channels. In order to solve the first problem please fill the feature vectors in the Training and Testing procedures in main.cpp file. The feature vector is a single channel column-matrix. It has nFeatures columns and 1 row. 
+
+In order to check your implementation, the first feature vector of the 001_fv.jpg should be equal to [132, 12, 73]
+
+> **Hint1 :** In order to access pixels of a gray-scaled image ```img``` you can use OpenCV method ```img.at<byte>(y, x)```, where x and y are coordinates of the pixel. 
+
+> **Hint 2:** In order to access pixels of an RGB color image ```img```, you can use OpenCV method ```img.at<Vec3b>(y, x)``` and to access the distingct color values: ```img.at<Vec3b>(y, x)[c]```, where c is the channel index from 0 to 2.
+
+## Problem 2
+### Class Prior Probability (Points 25)
+
 
 ## Submission
 Please submit the assignment by making a pull request.
