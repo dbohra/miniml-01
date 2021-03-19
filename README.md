@@ -39,7 +39,11 @@ In order to check your implementation, the first feature vector of the 001_fv.jp
 
 ## Problem 2
 ### Class Prior Probability (Points 25)
+In order to ally Bayes model we need to estimate the prior probabilities and likelyhoods from the training data. In this exersise we will estimate the prior probabilities. 
 
+
+## Problem 3
+### bla bla. (Points 25)
 
 ## Submission
 Please submit the assignment by making a pull request.
