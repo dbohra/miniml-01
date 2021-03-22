@@ -56,7 +56,8 @@ The resulting potentials should be stored in `res` variable, which is a one-colu
 Now, when both training and testing procedures are ready, we need to apply the decision theory in order to set proper label to every pixel of the testing image. 
 
 In the testing procedure in the main.cpp file we classify the testing image using its features stored in the 002_fv.jpg file. The potentials for every pixel are returned from classifier into the `potentials` variable. Find the largest potential in `potentials` variable and assign the corresponding class label to the `classLabel` variable. Test your implementation. If everything is correct you should obtain 79,1% of accuracy and the class-map as follows:
-[!]
+
+![Solution](./doc/solution.jpg)
 
 ## Submission
 Please submit the assignment by making a pull request.
