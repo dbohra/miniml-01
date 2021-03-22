@@ -39,7 +39,7 @@ In order to check your implementation, the first feature vector of the 001_fv.jp
 
 ## Problem 2
 ### Class Prior Probability (Points 25)
-In order to ally Bayes model we need to estimate the prior probabilities and likelyhoods from the training data. In this exersise we will estimate the prior probabilities. 
+In order to apply the Bayes model we need to estimate the prior probabilities and the likelyhoods from the training data. In this exersise we will estimate the prior probabilities. For this purpose we will use class `CPDFHistogram`. 
 
 
 ## Problem 3
