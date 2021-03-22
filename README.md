@@ -39,7 +39,11 @@ In order to check your implementation, the first feature vector of the 001_fv.jp
 
 ## Problem 2
 ### Class Prior Probability (Points 25)
-In order to apply the Bayes model we need to estimate the prior probabilities and the likelyhoods from the training data. In this exersise we will estimate the prior probabilities. For this purpose we will use class `CPDFHistogram`. 
+In order to apply the Bayes model we need to estimate the prior probabilities and the likelyhoods from the training data. In this exersise we will estimate the prior probabilities. For this purpose we will use class `CPDFHistogram`. This class is designed to store, estimate and represent PDFs via histograms. Please study its implementation in the provided framework.
+
+In `CBayes` class the prior probability is declared via smart pointer `std::shared_ptr<CPDFHistogram> m_pPrior;`, please see how it is initialized in the class constructor. In method `CBayes::addFeatureVec()` implement estimation of the prior probability. Check your implementation with the `printPriorProbabilities()` function: if your implementation is correct, the output will be: 
+
+`17.2%   0.4%    59.5%   9.9%    13.0%   0.0%`
 
 
 ## Problem 3
