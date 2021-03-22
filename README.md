@@ -33,7 +33,7 @@ We will start with extracting features from the images into the feature vector. 
 
 In order to check your implementation, the first feature vector of the 001_fv.jpg should be equal to [132, 12, 73]
 
-> **Hint1 :** In order to access pixels of a gray-scaled image ```img``` you can use OpenCV method ```img.at<byte>(y, x)```, where x and y are coordinates of the pixel. 
+> **Hint1:** In order to access pixels of a gray-scaled image ```img``` you can use OpenCV method ```img.at<byte>(y, x)```, where x and y are coordinates of the pixel. 
 
 > **Hint 2:** In order to access pixels of an RGB color image ```img```, you can use OpenCV method ```img.at<Vec3b>(y, x)``` and to access the distingct color values: ```img.at<Vec3b>(y, x)[c]```, where c is the channel index from 0 to 2.
 
@@ -41,10 +41,9 @@ In order to check your implementation, the first feature vector of the 001_fv.jp
 ### Class Prior Probability (Points 25)
 In order to apply the Bayes model we need to estimate the prior probabilities and the likelyhoods from the training data. In this exersise we will estimate the prior probabilities. For this purpose we will use class `CPDFHistogram`. This class is designed to store, estimate and represent PDFs via histograms. Please study its implementation in the provided framework.
 
-In `CBayes` class the prior probability is declared via smart pointer `std::shared_ptr<CPDFHistogram> m_pPrior;`, please see how it is initialized in the class constructor. In method `CBayes::addFeatureVec()` implement estimation of the prior probability. Check your implementation with the `printPriorProbabilities()` function: if your implementation is correct, the output will be: 
+In `CBayes` class the prior probability is declared via smart pointer `std::shared_ptr<CPDFHistogram> m_pPrior;`, please see how it is initialized in the class constructor. In method `CBayes::addFeatureVec()` implement estimation of the prior probability. 
 
-`17.2%   0.4%    59.5%   9.9%    13.0%   0.0%`
-
+> **Hint:** Test your implementation with the `printPriorProbabilities()` function: if your implementation is correct, the output will be: `17.2%   0.4%    59.5%   9.9%    13.0%   0.0%`
 
 ## Problem 3
 ### bla bla. (Points 25)
