@@ -1,99 +1,93 @@
 // Example "Training" 2D-case with model training
 
+#include "Bayes.h"
 #include "timer.h"
 
 int main(int argc, char *argv[])
 {
+#ifdef WIN32
+	const std::string dataPath = "../data/";
+#else
+	const std::string dataPath = "../../../data/";
+#endif
+	
 	const Size	imgSize		= Size(400, 400);
 	const int	width		= imgSize.width;
 	const int	height		= imgSize.height;
 	const byte	nStates		= 6;				// {road, traffic island, grass, agriculture, tree, car} 	
 	const word	nFeatures	= 3;		
 
-	// Reading parameters and images
-	int nodeModel	= atoi(argv[1]);																	// node training model
-	int edgeModel	= atoi(argv[2]);																	// edge training model
-	Mat train_fv	= imread(argv[3], 1); resize(train_fv, train_fv, imgSize, 0, 0, INTER_LANCZOS4);	// training image feature vector
-	Mat train_gt	= imread(argv[4], 0); resize(train_gt, train_gt, imgSize, 0, 0, INTER_NEAREST);		// groundtruth for training
-	Mat test_fv		= imread(argv[5], 1); resize(test_fv,  test_fv,  imgSize, 0, 0, INTER_LANCZOS4);	// testing image feature vector
-	Mat test_gt		= imread(argv[6], 0); resize(test_gt,  test_gt,  imgSize, 0, 0, INTER_NEAREST);		// groundtruth for evaluation
-	Mat test_img	= imread(argv[7], 1); resize(test_img, test_img, imgSize, 0, 0, INTER_LANCZOS4);	// testing image
+	// Reading the images
+	Mat train_fv	= imread(dataPath + "001_fv.jpg", 1);	resize(train_fv, train_fv, imgSize, 0, 0, INTER_LANCZOS4);	// training image feature vector
+	Mat train_gt	= imread(dataPath + "001_gt.bmp", 0);	resize(train_gt, train_gt, imgSize, 0, 0, INTER_NEAREST);	// groundtruth for training
+	Mat test_fv		= imread(dataPath + "002_fv.jpg", 1);	resize(test_fv,  test_fv,  imgSize, 0, 0, INTER_LANCZOS4);	// testing image feature vector
+	Mat test_gt		= imread(dataPath + "002_gt.bmp", 0);	resize(test_gt,  test_gt,  imgSize, 0, 0, INTER_NEAREST);	// groundtruth for evaluation
+	Mat test_img	= imread(dataPath + "002_img.jpg", 1);	resize(test_img, test_img, imgSize, 0, 0, INTER_LANCZOS4);	// testing image
+	Mat	featureVector(nFeatures, 1, CV_8UC1);
+	Mat	solution(imgSize, CV_8UC1);
 
-	// Preparing parameters for edge trainers
-	vec_float_t			vParams = {100, 0.01f};	
-	if (edgeModel <= 1 || edgeModel == 4) vParams.pop_back();	// Potts and Concat models need ony 1 parameter
-	if (edgeModel == 0) vParams[0] = 1;							// Emulate "No edges"
-	else edgeModel--;
-	
-	auto				nodeTrainer = CTrainNode::create(nodeModel, nStates, nFeatures);
-	CGraphPairwise		graph(nStates);
-	CGraphPairwiseExt	graphExt(graph);
-	CInferLBP			decoder(graph);
-	CMarker				marker(DEF_PALETTE_6);
-	CCMat				confMat(nStates);
+	auto classifier = std::make_shared<CBayes>(nStates, nFeatures);
 
-	// ==================== STAGE 1: Building the graph ====================
-	Timer::start("Building the Graph... ");
-	graphExt.buildGraph(imgSize);
-	Timer::stop();
-
-	// ========================= STAGE 2: Training =========================
+	// ========================= Training =========================
 	Timer::start("Training... ");
-	// Node Training (compact notation)
-	nodeTrainer->addFeatureVecs(train_fv, train_gt);					
+	for (int y = 0; y < imgSize.height; y++) {
+		for (int x = 0; x < imgSize.width; x++) {
+			// --- PUT YOUR CODE HERE ---
 
-	// Edge Training (comprehensive notation)
-	Mat featureVector1(nFeatures, 1, CV_8UC1); 
-	Mat featureVector2(nFeatures, 1, CV_8UC1); 	
-	for (int y = 1; y < height; y++) {
-		byte *pFv1 = train_fv.ptr<byte>(y);
-		byte *pFv2 = train_fv.ptr<byte>(y - 1);
-		byte *pGt1 = train_gt.ptr<byte>(y);
-		byte *pGt2 = train_gt.ptr<byte>(y - 1);
-		for (int x = 1; x < width; x++) {
-			for (word f = 0; f < nFeatures; f++) featureVector1.at<byte>(f, 0) = pFv1[nFeatures * x + f];		// featureVector1 = fv[x][y]
 
-			for (word f = 0; f < nFeatures; f++) featureVector2.at<byte>(f, 0) = pFv1[nFeatures * (x - 1) + f];	// featureVector2 = fv[x-1][y]
-			edgeTrainer->addFeatureVecs(featureVector1, pGt1[x], featureVector2, pGt1[x-1]);
-			edgeTrainer->addFeatureVecs(featureVector2, pGt1[x-1], featureVector1, pGt1[x]);
 
-			for (word f = 0; f < nFeatures; f++) featureVector2.at<byte>(f, 0) = pFv2[nFeatures * x + f];		// featureVector2 = fv[x][y-1]
-			edgeTrainer->addFeatureVecs(featureVector1, pGt1[x], featureVector2, pGt2[x]);
-			edgeTrainer->addFeatureVecs(featureVector2, pGt2[x], featureVector1, pGt1[x]);
+			if (x == 0 && y == 0)
+				std::cout << featureVector << std::endl;
+
+			byte gt = train_gt.at<byte>(y, x);
+			classifier->addFeatureVec(featureVector, gt);
 		} // x
 	} // y
-
-	nodeTrainer->train(); 
-	edgeTrainer->train(); 
 	Timer::stop();
 
-	// ==================== STAGE 3: Filling the Graph =====================
-	Timer::start("Filling the Graph... ");
-	Mat nodePotentials = nodeTrainer->getNodePotentials(test_fv);		// Classification: CV_32FC(nStates) <- CV_8UC(nFeatures)
-	graphExt.setGraph(nodePotentials);									// Filling-in the graph nodes
-	graphExt.fillEdges(*edgeTrainer, test_fv, vParams);					// Filling-in the graph edges with pairwise potentials
-	Timer::stop();
+	classifier->printPriorProbabilities();
 
-	// ========================= STAGE 4: Decoding =========================
-	Timer::start("Decoding... ");
-	vec_byte_t optimalDecoding = decoder.decode(100);
+	// ========================= Testing =========================
+	Timer::start("Testing... ");
+	for (int y = 0; y < imgSize.height; y++) {
+		for (int x = 0; x < imgSize.width; x++) {
+			// --- PUT YOUR CODE HERE ---
+
+
+
+			// get potentials
+			Mat potentials = classifier->getPotentials(featureVector);
+			
+			// find the largest potential
+			byte classLabel = 0;
+			// --- PUT YOUR CODE HERE ---
+			
+
+
+			solution.at<byte>(y, x) = classLabel;
+		}
+	}
 	Timer::stop();
 
 	// ====================== Evaluation =======================	
-	Mat solution(imgSize, CV_8UC1, optimalDecoding.data());
-	confMat.estimate(test_gt, solution);								// compare solution with the groundtruth
-	char str[255];
-	sprintf(str, "Accuracy = %.2f%%", confMat.getAccuracy());
-	printf("%s\n", str);
+	Timer::start("Evaluation... ");
+	double accuracy = 0;
+	for (int y = 0; y < imgSize.height; y++)
+		for (int x = 0; x < imgSize.width; x++)
+			if (solution.at<byte>(y, x) == test_gt.at<byte>(y, x))
+				accuracy++;
+	accuracy /= (imgSize.height * imgSize.width);
+	Timer::stop();
+	printf("Accuracy = %.2f%%\n", accuracy * 100);
+
 
 	// ====================== Visualization =======================
-	marker.markClasses(test_img, solution);
-	rectangle(test_img, Point(width - 160, height- 18), Point(width, height), CV_RGB(0,0,0), -1);
-	putText(test_img, str, Point(width - 155, height - 5), cv::HersheyFonts::FONT_HERSHEY_SIMPLEX, 0.45, CV_RGB(225, 240, 255), 1, cv::LineTypes::LINE_AA);
-	imwrite(argv[8], test_img);
-	
-	imshow("Image", test_img);
-	waitKey(100);
+	solution *= 32;
+	test_gt *= 32;
+	imshow("Test image", test_img);
+	imshow("groundtruth", test_gt);
+	imshow("solution", solution);
+	waitKey();
 
 	return 0;
 }

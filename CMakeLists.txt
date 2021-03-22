@@ -11,9 +11,8 @@ file(GLOB HEADERS "src/*.h")
 source_group("Include" FILES ${INCLUDE})
 source_group("" FILES ${INCLUDE} ${SOURCES} ${HEADERS}) 
 source_group("Source Files" FILES "src/main.cpp") 
-#source_group("Source Files\\Camera Controller" FILES "src/CameraController.h" "src/CameraController.cpp")
-#source_group("Source Files\\Face" FILES "src/Face.h" "src/Face.cpp")
-#source_group("Source Files\\Marker" FILES "src/Marker.h" "src/Marker.cpp")
+source_group("Source Files\\Bayes" FILES "src/Bayes.h" "src/Bayes.cpp")
+source_group("Source Files\\Histogram" FILES "src/PDFHistogram.h" "src/PDFHistogram.cpp")
 source_group("Source Files\\utilities" FILES "src/timer.h")
 
 # OpenCV package
