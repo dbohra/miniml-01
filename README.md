@@ -4,7 +4,7 @@
 Please put your name here:  
 **Name:** .......
 ## Foreword
-### Implementation of a Minimal Ray Tracing System
+### Implementation of a Minimal Classification System
 
 Each basic machine learning system in principle comprises 3 stages:
 - **Training** where the entire ML models' parametra are estimated with help of training data (data + groundtruth).
